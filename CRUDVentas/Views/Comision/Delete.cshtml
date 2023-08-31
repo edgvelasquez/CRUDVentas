@@ -1,0 +1,48 @@
+﻿@model CRUDVentas.Models.Tbl_Comision
+
+@{
+    ViewBag.Title = "Eliminar comisión";
+}
+
+<h2>Eliminar comisión</h2>
+
+<h3>¿Está seguro que desea eliminar?</h3>
+<div>
+    <h4>Información</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.id_comision)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.id_comision)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.margen)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.margen)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.tipo_ventas)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.tipo_ventas)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Eliminar" class="btn btn-danger" /> |
+            @Html.ActionLink("Volver", "Index")
+        </div>
+    }
+</div>

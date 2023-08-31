@@ -1,0 +1,683 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="DB_PROD_VENTASModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="sysdiagrams">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="principal_id" Type="int" Nullable="false" />
+          <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="version" Type="int" />
+          <Property Name="definition" Type="varbinary(max)" />
+        </EntityType>
+        <EntityType Name="Tbl_Comision">
+          <Key>
+            <PropertyRef Name="id_comision" />
+          </Key>
+          <Property Name="id_comision" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="margen" Type="float" />
+          <Property Name="tipo_ventas" Type="varchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="Tbl_Region">
+          <Key>
+            <PropertyRef Name="cod_region" />
+          </Key>
+          <Property Name="cod_region" Type="int" Nullable="false" />
+          <Property Name="descripcion" Type="varchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="Tbl_TipoVenta">
+          <Key>
+            <PropertyRef Name="tipo_ventas" />
+          </Key>
+          <Property Name="id_comision" Type="int" Nullable="false" />
+          <Property Name="margen" Type="float" />
+          <Property Name="tipo_ventas" Type="varchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Tbl_Vendedor">
+          <Key>
+            <PropertyRef Name="rut" />
+          </Key>
+          <Property Name="rut" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="nombre" Type="varchar" MaxLength="50" />
+          <Property Name="a_paterno" Type="varchar" MaxLength="50" />
+          <Property Name="a_materno" Type="varchar" MaxLength="50" />
+          <Property Name="direccion" Type="varchar" MaxLength="200" />
+          <Property Name="fono" Type="varchar" MaxLength="50" />
+          <Property Name="email" Type="varchar" MaxLength="100" />
+          <Property Name="fecha_ingreso" Type="date" />
+          <Property Name="region" Type="int" Nullable="false" />
+          <Property Name="pais" Type="varchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="Tbl_Ventas">
+          <Key>
+            <PropertyRef Name="id_venta" />
+          </Key>
+          <Property Name="id_venta" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="rut_vendedor" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="monto" Type="float" />
+          <Property Name="margen" Type="int" Nullable="false" />
+          <Property Name="fecha_venta" Type="date" />
+          <Property Name="id_usuario" Type="int" />
+        </EntityType>
+        <Association Name="FK_Tbl_TipoVenta_Tbl_Comision">
+          <End Role="Tbl_Comision" Type="Self.Tbl_Comision" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Tbl_TipoVenta" Type="Self.Tbl_TipoVenta" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tbl_Comision">
+              <PropertyRef Name="id_comision" />
+            </Principal>
+            <Dependent Role="Tbl_TipoVenta">
+              <PropertyRef Name="id_comision" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Tbl_Vendedor_Tbl_Region">
+          <End Role="Tbl_Region" Type="Self.Tbl_Region" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Tbl_Vendedor" Type="Self.Tbl_Vendedor" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tbl_Region">
+              <PropertyRef Name="cod_region" />
+            </Principal>
+            <Dependent Role="Tbl_Vendedor">
+              <PropertyRef Name="region" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Tbl_Ventas_Tbl_Comision">
+          <End Role="Tbl_Comision" Type="Self.Tbl_Comision" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Tbl_Ventas" Type="Self.Tbl_Ventas" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tbl_Comision">
+              <PropertyRef Name="id_comision" />
+            </Principal>
+            <Dependent Role="Tbl_Ventas">
+              <PropertyRef Name="margen" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Tbl_Ventas_Tbl_Vendedor">
+          <End Role="Tbl_Vendedor" Type="Self.Tbl_Vendedor" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Tbl_Ventas" Type="Self.Tbl_Ventas" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tbl_Vendedor">
+              <PropertyRef Name="rut" />
+            </Principal>
+            <Dependent Role="Tbl_Ventas">
+              <PropertyRef Name="rut_vendedor" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Function Name="ActualizarComision" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="id_comision" Type="int" Mode="In" />
+          <Parameter Name="margen" Type="float" Mode="In" />
+          <Parameter Name="tipo_ventas" Type="varchar" Mode="In" />
+        </Function>
+        <Function Name="ActualizarRegion" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="cod_region" Type="int" Mode="In" />
+          <Parameter Name="descripcion" Type="varchar" Mode="In" />
+        </Function>
+        <Function Name="ActualizarTipoVenta" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="id_comision" Type="int" Mode="In" />
+          <Parameter Name="margen" Type="float" Mode="In" />
+          <Parameter Name="tipo_ventas" Type="varchar" Mode="In" />
+        </Function>
+        <Function Name="ActualizarVendedor" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="rut" Type="varchar" Mode="In" />
+          <Parameter Name="nombre" Type="varchar" Mode="In" />
+          <Parameter Name="a_paterno" Type="varchar" Mode="In" />
+          <Parameter Name="a_materno" Type="varchar" Mode="In" />
+          <Parameter Name="direccion" Type="varchar" Mode="In" />
+          <Parameter Name="fono" Type="varchar" Mode="In" />
+          <Parameter Name="email" Type="varchar" Mode="In" />
+          <Parameter Name="region" Type="int" Mode="In" />
+          <Parameter Name="pais" Type="varchar" Mode="In" />
+        </Function>
+        <Function Name="ActualizarVenta" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="id_venta" Type="int" Mode="In" />
+          <Parameter Name="rut_vendedor" Type="varchar" Mode="In" />
+          <Parameter Name="monto" Type="float" Mode="In" />
+          <Parameter Name="margen" Type="float" Mode="In" />
+          <Parameter Name="fecha_venta" Type="date" Mode="In" />
+          <Parameter Name="id_usuario" Type="int" Mode="In" />
+        </Function>
+        <Function Name="AgregarComision" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="margen" Type="float" Mode="In" />
+          <Parameter Name="tipo_ventas" Type="varchar" Mode="In" />
+        </Function>
+        <Function Name="AgregarRegion" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="cod_region" Type="int" Mode="In" />
+          <Parameter Name="descripcion" Type="varchar" Mode="In" />
+        </Function>
+        <Function Name="AgregarTipoVenta" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="id_comision" Type="int" Mode="In" />
+          <Parameter Name="margen" Type="float" Mode="In" />
+          <Parameter Name="tipo_ventas" Type="varchar" Mode="In" />
+        </Function>
+        <Function Name="AgregarVendedor" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="rut" Type="varchar" Mode="In" />
+          <Parameter Name="nombre" Type="varchar" Mode="In" />
+          <Parameter Name="a_paterno" Type="varchar" Mode="In" />
+          <Parameter Name="a_materno" Type="varchar" Mode="In" />
+          <Parameter Name="direccion" Type="varchar" Mode="In" />
+          <Parameter Name="fono" Type="varchar" Mode="In" />
+          <Parameter Name="email" Type="varchar" Mode="In" />
+          <Parameter Name="fecha_ingreso" Type="date" Mode="In" />
+          <Parameter Name="region" Type="int" Mode="In" />
+          <Parameter Name="pais" Type="varchar" Mode="In" />
+        </Function>
+        <Function Name="AgregarVenta" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="rut_vendedor" Type="varchar" Mode="In" />
+          <Parameter Name="monto" Type="float" Mode="In" />
+          <Parameter Name="margen" Type="float" Mode="In" />
+          <Parameter Name="fecha_venta" Type="date" Mode="In" />
+          <Parameter Name="id_usuario" Type="int" Mode="In" />
+        </Function>
+        <Function Name="EliminarComision" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="id_comision" Type="int" Mode="In" />
+        </Function>
+        <Function Name="EliminarRegion" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="cod_region" Type="int" Mode="In" />
+        </Function>
+        <Function Name="EliminarTipoVenta" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="id_comision" Type="int" Mode="In" />
+        </Function>
+        <Function Name="EliminarVendedor" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="rut" Type="varchar" Mode="In" />
+        </Function>
+        <Function Name="EliminarVenta" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="id_venta" Type="int" Mode="In" />
+        </Function>
+        <Function Name="GetVendedoresPorRegion" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="region" Type="varchar" Mode="In" />
+        </Function>
+        <Function Name="GetVentasPorFecha" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="sp_alterdiagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+          <Parameter Name="owner_id" Type="int" Mode="In" />
+          <Parameter Name="version" Type="int" Mode="In" />
+          <Parameter Name="definition" Type="varbinary(max)" Mode="In" />
+        </Function>
+        <Function Name="sp_creatediagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+          <Parameter Name="owner_id" Type="int" Mode="In" />
+          <Parameter Name="version" Type="int" Mode="In" />
+          <Parameter Name="definition" Type="varbinary(max)" Mode="In" />
+        </Function>
+        <Function Name="sp_dropdiagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+          <Parameter Name="owner_id" Type="int" Mode="In" />
+        </Function>
+        <Function Name="sp_helpdiagramdefinition" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+          <Parameter Name="owner_id" Type="int" Mode="In" />
+        </Function>
+        <Function Name="sp_helpdiagrams" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+          <Parameter Name="owner_id" Type="int" Mode="In" />
+        </Function>
+        <Function Name="sp_renamediagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+          <Parameter Name="owner_id" Type="int" Mode="In" />
+          <Parameter Name="new_diagramname" Type="nvarchar" Mode="In" />
+        </Function>
+        <Function Name="sp_upgraddiagrams" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <EntityContainer Name="DB_PROD_VENTASModelStoreContainer">
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Tbl_Comision" EntityType="Self.Tbl_Comision" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Tbl_Region" EntityType="Self.Tbl_Region" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Tbl_TipoVenta" EntityType="Self.Tbl_TipoVenta" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Tbl_Vendedor" EntityType="Self.Tbl_Vendedor" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Tbl_Ventas" EntityType="Self.Tbl_Ventas" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_Tbl_TipoVenta_Tbl_Comision" Association="Self.FK_Tbl_TipoVenta_Tbl_Comision">
+            <End Role="Tbl_Comision" EntitySet="Tbl_Comision" />
+            <End Role="Tbl_TipoVenta" EntitySet="Tbl_TipoVenta" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Tbl_Vendedor_Tbl_Region" Association="Self.FK_Tbl_Vendedor_Tbl_Region">
+            <End Role="Tbl_Region" EntitySet="Tbl_Region" />
+            <End Role="Tbl_Vendedor" EntitySet="Tbl_Vendedor" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Tbl_Ventas_Tbl_Comision" Association="Self.FK_Tbl_Ventas_Tbl_Comision">
+            <End Role="Tbl_Comision" EntitySet="Tbl_Comision" />
+            <End Role="Tbl_Ventas" EntitySet="Tbl_Ventas" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Tbl_Ventas_Tbl_Vendedor" Association="Self.FK_Tbl_Ventas_Tbl_Vendedor">
+            <End Role="Tbl_Vendedor" EntitySet="Tbl_Vendedor" />
+            <End Role="Tbl_Ventas" EntitySet="Tbl_Ventas" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="DB_PROD_VENTASModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="sysdiagrams">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="principal_id" Type="Int32" Nullable="false" />
+          <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="version" Type="Int32" />
+          <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+        </EntityType>
+        <EntityType Name="Tbl_Comision">
+          <Key>
+            <PropertyRef Name="id_comision" />
+          </Key>
+          <Property Name="id_comision" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="margen" Type="Double" />
+          <Property Name="tipo_ventas" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Tbl_TipoVenta" Relationship="Self.FK_Tbl_TipoVenta_Tbl_Comision" FromRole="Tbl_Comision" ToRole="Tbl_TipoVenta" />
+          <NavigationProperty Name="Tbl_Ventas" Relationship="Self.FK_Tbl_Ventas_Tbl_Comision" FromRole="Tbl_Comision" ToRole="Tbl_Ventas" />
+        </EntityType>
+        <EntityType Name="Tbl_Region">
+          <Key>
+            <PropertyRef Name="cod_region" />
+          </Key>
+          <Property Name="cod_region" Type="Int32" Nullable="false" />
+          <Property Name="descripcion" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Tbl_Vendedor" Relationship="Self.FK_Tbl_Vendedor_Tbl_Region" FromRole="Tbl_Region" ToRole="Tbl_Vendedor" />
+        </EntityType>
+        <EntityType Name="Tbl_TipoVenta">
+          <Key>
+            <PropertyRef Name="tipo_ventas" />
+          </Key>
+          <Property Name="id_comision" Type="Int32" Nullable="false" />
+          <Property Name="margen" Type="Double" />
+          <Property Name="tipo_ventas" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="Tbl_Comision" Relationship="Self.FK_Tbl_TipoVenta_Tbl_Comision" FromRole="Tbl_TipoVenta" ToRole="Tbl_Comision" />
+        </EntityType>
+        <EntityType Name="Tbl_Vendedor">
+          <Key>
+            <PropertyRef Name="rut" />
+          </Key>
+          <Property Name="rut" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="nombre" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="a_paterno" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="a_materno" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="direccion" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="fono" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="email" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="fecha_ingreso" Type="DateTime" Precision="0" />
+          <Property Name="region" Type="Int32" Nullable="false" />
+          <Property Name="pais" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Tbl_Region" Relationship="Self.FK_Tbl_Vendedor_Tbl_Region" FromRole="Tbl_Vendedor" ToRole="Tbl_Region" />
+          <NavigationProperty Name="Tbl_Ventas" Relationship="Self.FK_Tbl_Ventas_Tbl_Vendedor" FromRole="Tbl_Vendedor" ToRole="Tbl_Ventas" />
+        </EntityType>
+        <EntityType Name="Tbl_Ventas">
+          <Key>
+            <PropertyRef Name="id_venta" />
+          </Key>
+          <Property Name="id_venta" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="rut_vendedor" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="monto" Type="Double" />
+          <Property Name="margen" Type="Int32" Nullable="false" />
+          <Property Name="fecha_venta" Type="DateTime" Precision="0" />
+          <Property Name="id_usuario" Type="Int32" />
+          <NavigationProperty Name="Tbl_Comision" Relationship="Self.FK_Tbl_Ventas_Tbl_Comision" FromRole="Tbl_Ventas" ToRole="Tbl_Comision" />
+          <NavigationProperty Name="Tbl_Vendedor" Relationship="Self.FK_Tbl_Ventas_Tbl_Vendedor" FromRole="Tbl_Ventas" ToRole="Tbl_Vendedor" />
+        </EntityType>
+        <Association Name="FK_Tbl_TipoVenta_Tbl_Comision">
+          <End Role="Tbl_Comision" Type="Self.Tbl_Comision" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Tbl_TipoVenta" Type="Self.Tbl_TipoVenta" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tbl_Comision">
+              <PropertyRef Name="id_comision" />
+            </Principal>
+            <Dependent Role="Tbl_TipoVenta">
+              <PropertyRef Name="id_comision" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Tbl_Ventas_Tbl_Comision">
+          <End Role="Tbl_Comision" Type="Self.Tbl_Comision" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Tbl_Ventas" Type="Self.Tbl_Ventas" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tbl_Comision">
+              <PropertyRef Name="id_comision" />
+            </Principal>
+            <Dependent Role="Tbl_Ventas">
+              <PropertyRef Name="margen" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Tbl_Vendedor_Tbl_Region">
+          <End Role="Tbl_Region" Type="Self.Tbl_Region" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Tbl_Vendedor" Type="Self.Tbl_Vendedor" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tbl_Region">
+              <PropertyRef Name="cod_region" />
+            </Principal>
+            <Dependent Role="Tbl_Vendedor">
+              <PropertyRef Name="region" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Tbl_Ventas_Tbl_Vendedor">
+          <End Role="Tbl_Vendedor" Type="Self.Tbl_Vendedor" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Tbl_Ventas" Type="Self.Tbl_Ventas" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tbl_Vendedor">
+              <PropertyRef Name="rut" />
+            </Principal>
+            <Dependent Role="Tbl_Ventas">
+              <PropertyRef Name="rut_vendedor" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="DbModels" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" />
+          <EntitySet Name="Tbl_Comision" EntityType="Self.Tbl_Comision" />
+          <EntitySet Name="Tbl_Region" EntityType="Self.Tbl_Region" />
+          <EntitySet Name="Tbl_TipoVenta" EntityType="Self.Tbl_TipoVenta" />
+          <EntitySet Name="Tbl_Vendedor" EntityType="Self.Tbl_Vendedor" />
+          <EntitySet Name="Tbl_Ventas" EntityType="Self.Tbl_Ventas" />
+          <AssociationSet Name="FK_Tbl_TipoVenta_Tbl_Comision" Association="Self.FK_Tbl_TipoVenta_Tbl_Comision">
+            <End Role="Tbl_Comision" EntitySet="Tbl_Comision" />
+            <End Role="Tbl_TipoVenta" EntitySet="Tbl_TipoVenta" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Tbl_Ventas_Tbl_Comision" Association="Self.FK_Tbl_Ventas_Tbl_Comision">
+            <End Role="Tbl_Comision" EntitySet="Tbl_Comision" />
+            <End Role="Tbl_Ventas" EntitySet="Tbl_Ventas" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Tbl_Vendedor_Tbl_Region" Association="Self.FK_Tbl_Vendedor_Tbl_Region">
+            <End Role="Tbl_Region" EntitySet="Tbl_Region" />
+            <End Role="Tbl_Vendedor" EntitySet="Tbl_Vendedor" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Tbl_Ventas_Tbl_Vendedor" Association="Self.FK_Tbl_Ventas_Tbl_Vendedor">
+            <End Role="Tbl_Vendedor" EntitySet="Tbl_Vendedor" />
+            <End Role="Tbl_Ventas" EntitySet="Tbl_Ventas" />
+          </AssociationSet>
+          <FunctionImport Name="ActualizarComision">
+            <Parameter Name="id_comision" Mode="In" Type="Int32" />
+            <Parameter Name="margen" Mode="In" Type="Double" />
+            <Parameter Name="tipo_ventas" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="ActualizarRegion">
+            <Parameter Name="cod_region" Mode="In" Type="Int32" />
+            <Parameter Name="descripcion" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="ActualizarTipoVenta">
+            <Parameter Name="id_comision" Mode="In" Type="Int32" />
+            <Parameter Name="margen" Mode="In" Type="Double" />
+            <Parameter Name="tipo_ventas" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="ActualizarVendedor">
+            <Parameter Name="rut" Mode="In" Type="String" />
+            <Parameter Name="nombre" Mode="In" Type="String" />
+            <Parameter Name="a_paterno" Mode="In" Type="String" />
+            <Parameter Name="a_materno" Mode="In" Type="String" />
+            <Parameter Name="direccion" Mode="In" Type="String" />
+            <Parameter Name="fono" Mode="In" Type="String" />
+            <Parameter Name="email" Mode="In" Type="String" />
+            <Parameter Name="region" Mode="In" Type="Int32" />
+            <Parameter Name="pais" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="ActualizarVenta">
+            <Parameter Name="id_venta" Mode="In" Type="Int32" />
+            <Parameter Name="rut_vendedor" Mode="In" Type="String" />
+            <Parameter Name="monto" Mode="In" Type="Double" />
+            <Parameter Name="margen" Mode="In" Type="Double" />
+            <Parameter Name="fecha_venta" Mode="In" Type="DateTime" />
+            <Parameter Name="id_usuario" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="AgregarComision">
+            <Parameter Name="margen" Mode="In" Type="Double" />
+            <Parameter Name="tipo_ventas" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="AgregarRegion">
+            <Parameter Name="cod_region" Mode="In" Type="Int32" />
+            <Parameter Name="descripcion" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="AgregarTipoVenta">
+            <Parameter Name="id_comision" Mode="In" Type="Int32" />
+            <Parameter Name="margen" Mode="In" Type="Double" />
+            <Parameter Name="tipo_ventas" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="AgregarVendedor">
+            <Parameter Name="rut" Mode="In" Type="String" />
+            <Parameter Name="nombre" Mode="In" Type="String" />
+            <Parameter Name="a_paterno" Mode="In" Type="String" />
+            <Parameter Name="a_materno" Mode="In" Type="String" />
+            <Parameter Name="direccion" Mode="In" Type="String" />
+            <Parameter Name="fono" Mode="In" Type="String" />
+            <Parameter Name="email" Mode="In" Type="String" />
+            <Parameter Name="fecha_ingreso" Mode="In" Type="DateTime" />
+            <Parameter Name="region" Mode="In" Type="Int32" />
+            <Parameter Name="pais" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="AgregarVenta">
+            <Parameter Name="rut_vendedor" Mode="In" Type="String" />
+            <Parameter Name="monto" Mode="In" Type="Double" />
+            <Parameter Name="margen" Mode="In" Type="Double" />
+            <Parameter Name="fecha_venta" Mode="In" Type="DateTime" />
+            <Parameter Name="id_usuario" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="EliminarComision">
+          <Parameter Name="id_comision" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="EliminarRegion">
+          <Parameter Name="cod_region" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="EliminarTipoVenta">
+          <Parameter Name="id_comision" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="EliminarVendedor">
+          <Parameter Name="rut" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="EliminarVenta">
+          <Parameter Name="id_venta" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="GetVendedoresPorRegion" ReturnType="Collection(String)">
+          <Parameter Name="region" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="sp_alterdiagram">
+            <Parameter Name="diagramname" Mode="In" Type="String" />
+            <Parameter Name="owner_id" Mode="In" Type="Int32" />
+            <Parameter Name="version" Mode="In" Type="Int32" />
+            <Parameter Name="definition" Mode="In" Type="Binary" />
+          </FunctionImport>
+          <FunctionImport Name="sp_dropdiagram">
+            <Parameter Name="diagramname" Mode="In" Type="String" />
+            <Parameter Name="owner_id" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="sp_helpdiagramdefinition" ReturnType="Collection(DB_PROD_VENTASModel.sp_helpdiagramdefinition_Result)">
+            <Parameter Name="diagramname" Mode="In" Type="String" />
+            <Parameter Name="owner_id" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="sp_helpdiagrams" ReturnType="Collection(DB_PROD_VENTASModel.sp_helpdiagrams_Result)">
+            <Parameter Name="diagramname" Mode="In" Type="String" />
+            <Parameter Name="owner_id" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="sp_renamediagram">
+            <Parameter Name="diagramname" Mode="In" Type="String" />
+            <Parameter Name="owner_id" Mode="In" Type="Int32" />
+            <Parameter Name="new_diagramname" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="sp_upgraddiagrams" />
+          <FunctionImport Name="GetVentasPorFecha" ReturnType="Collection(DB_PROD_VENTASModel.GetVentasPorFecha_Result)">
+            </FunctionImport>
+        </EntityContainer>
+        <ComplexType Name="sp_helpdiagramdefinition_Result">
+          <Property Type="Int32" Name="version" Nullable="true" />
+          <Property Type="Binary" Name="definition" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="sp_helpdiagrams_Result">
+          <Property Type="String" Name="Database" Nullable="true" MaxLength="128" />
+          <Property Type="String" Name="Name" Nullable="false" MaxLength="128" />
+          <Property Type="Int32" Name="ID" Nullable="false" />
+          <Property Type="String" Name="Owner" Nullable="true" MaxLength="128" />
+          <Property Type="Int32" Name="OwnerID" Nullable="false" />
+        </ComplexType>
+        <ComplexType Name="GetVentasPorFecha_Result">
+          <Property Type="String" Name="rut" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="nombre" Nullable="true" MaxLength="50" />
+          <Property Type="Double" Name="total" Nullable="true" />
+          <Property Type="Double" Name="total_comision" Nullable="true" />
+          <Property Type="DateTime" Name="fecha_venta" Nullable="true" />
+        </ComplexType>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="DB_PROD_VENTASModelStoreContainer" CdmEntityContainer="DbModels">
+          <EntitySetMapping Name="sysdiagrams">
+            <EntityTypeMapping TypeName="DB_PROD_VENTASModel.sysdiagrams">
+              <MappingFragment StoreEntitySet="sysdiagrams">
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="principal_id" ColumnName="principal_id" />
+                <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
+                <ScalarProperty Name="version" ColumnName="version" />
+                <ScalarProperty Name="definition" ColumnName="definition" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Tbl_Comision">
+            <EntityTypeMapping TypeName="DB_PROD_VENTASModel.Tbl_Comision">
+              <MappingFragment StoreEntitySet="Tbl_Comision">
+                <ScalarProperty Name="id_comision" ColumnName="id_comision" />
+                <ScalarProperty Name="margen" ColumnName="margen" />
+                <ScalarProperty Name="tipo_ventas" ColumnName="tipo_ventas" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Tbl_Region">
+            <EntityTypeMapping TypeName="DB_PROD_VENTASModel.Tbl_Region">
+              <MappingFragment StoreEntitySet="Tbl_Region">
+                <ScalarProperty Name="cod_region" ColumnName="cod_region" />
+                <ScalarProperty Name="descripcion" ColumnName="descripcion" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Tbl_TipoVenta">
+            <EntityTypeMapping TypeName="DB_PROD_VENTASModel.Tbl_TipoVenta">
+              <MappingFragment StoreEntitySet="Tbl_TipoVenta">
+                <ScalarProperty Name="id_comision" ColumnName="id_comision" />
+                <ScalarProperty Name="margen" ColumnName="margen" />
+                <ScalarProperty Name="tipo_ventas" ColumnName="tipo_ventas" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Tbl_Vendedor">
+            <EntityTypeMapping TypeName="DB_PROD_VENTASModel.Tbl_Vendedor">
+              <MappingFragment StoreEntitySet="Tbl_Vendedor">
+                <ScalarProperty Name="rut" ColumnName="rut" />
+                <ScalarProperty Name="nombre" ColumnName="nombre" />
+                <ScalarProperty Name="a_paterno" ColumnName="a_paterno" />
+                <ScalarProperty Name="a_materno" ColumnName="a_materno" />
+                <ScalarProperty Name="direccion" ColumnName="direccion" />
+                <ScalarProperty Name="fono" ColumnName="fono" />
+                <ScalarProperty Name="email" ColumnName="email" />
+                <ScalarProperty Name="fecha_ingreso" ColumnName="fecha_ingreso" />
+                <ScalarProperty Name="region" ColumnName="region" />
+                <ScalarProperty Name="pais" ColumnName="pais" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Tbl_Ventas">
+            <EntityTypeMapping TypeName="DB_PROD_VENTASModel.Tbl_Ventas">
+              <MappingFragment StoreEntitySet="Tbl_Ventas">
+                <ScalarProperty Name="id_venta" ColumnName="id_venta" />
+                <ScalarProperty Name="rut_vendedor" ColumnName="rut_vendedor" />
+                <ScalarProperty Name="monto" ColumnName="monto" />
+                <ScalarProperty Name="margen" ColumnName="margen" />
+                <ScalarProperty Name="fecha_venta" ColumnName="fecha_venta" />
+                <ScalarProperty Name="id_usuario" ColumnName="id_usuario" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="ActualizarComision" FunctionName="DB_PROD_VENTASModel.Store.ActualizarComision" />
+          <FunctionImportMapping FunctionImportName="ActualizarRegion" FunctionName="DB_PROD_VENTASModel.Store.ActualizarRegion" />
+          <FunctionImportMapping FunctionImportName="ActualizarTipoVenta" FunctionName="DB_PROD_VENTASModel.Store.ActualizarTipoVenta" />
+          <FunctionImportMapping FunctionImportName="ActualizarVendedor" FunctionName="DB_PROD_VENTASModel.Store.ActualizarVendedor" />
+          <FunctionImportMapping FunctionImportName="ActualizarVenta" FunctionName="DB_PROD_VENTASModel.Store.ActualizarVenta" />
+          <FunctionImportMapping FunctionImportName="AgregarComision" FunctionName="DB_PROD_VENTASModel.Store.AgregarComision" />
+          <FunctionImportMapping FunctionImportName="AgregarRegion" FunctionName="DB_PROD_VENTASModel.Store.AgregarRegion" />
+          <FunctionImportMapping FunctionImportName="AgregarTipoVenta" FunctionName="DB_PROD_VENTASModel.Store.AgregarTipoVenta" />
+          <FunctionImportMapping FunctionImportName="AgregarVendedor" FunctionName="DB_PROD_VENTASModel.Store.AgregarVendedor" />
+          <FunctionImportMapping FunctionImportName="AgregarVenta" FunctionName="DB_PROD_VENTASModel.Store.AgregarVenta" />
+          <FunctionImportMapping FunctionImportName="EliminarComision" FunctionName="DB_PROD_VENTASModel.Store.EliminarComision" />
+          <FunctionImportMapping FunctionImportName="EliminarRegion" FunctionName="DB_PROD_VENTASModel.Store.EliminarRegion" />
+          <FunctionImportMapping FunctionImportName="EliminarTipoVenta" FunctionName="DB_PROD_VENTASModel.Store.EliminarTipoVenta" />
+          <FunctionImportMapping FunctionImportName="EliminarVendedor" FunctionName="DB_PROD_VENTASModel.Store.EliminarVendedor" />
+          <FunctionImportMapping FunctionImportName="EliminarVenta" FunctionName="DB_PROD_VENTASModel.Store.EliminarVenta" />
+          <FunctionImportMapping FunctionImportName="GetVendedoresPorRegion" FunctionName="DB_PROD_VENTASModel.Store.GetVendedoresPorRegion" />
+          <FunctionImportMapping FunctionImportName="sp_alterdiagram" FunctionName="DB_PROD_VENTASModel.Store.sp_alterdiagram" />
+          <FunctionImportMapping FunctionImportName="sp_dropdiagram" FunctionName="DB_PROD_VENTASModel.Store.sp_dropdiagram" />
+          <FunctionImportMapping FunctionImportName="sp_helpdiagramdefinition" FunctionName="DB_PROD_VENTASModel.Store.sp_helpdiagramdefinition">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="DB_PROD_VENTASModel.sp_helpdiagramdefinition_Result">
+                <ScalarProperty Name="version" ColumnName="version" />
+                <ScalarProperty Name="definition" ColumnName="definition" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="sp_helpdiagrams" FunctionName="DB_PROD_VENTASModel.Store.sp_helpdiagrams">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="DB_PROD_VENTASModel.sp_helpdiagrams_Result">
+                <ScalarProperty Name="Database" ColumnName="Database" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Owner" ColumnName="Owner" />
+                <ScalarProperty Name="OwnerID" ColumnName="OwnerID" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="sp_renamediagram" FunctionName="DB_PROD_VENTASModel.Store.sp_renamediagram" />
+          <FunctionImportMapping FunctionImportName="sp_upgraddiagrams" FunctionName="DB_PROD_VENTASModel.Store.sp_upgraddiagrams" />
+          <FunctionImportMapping FunctionImportName="GetVentasPorFecha" FunctionName="DB_PROD_VENTASModel.Store.GetVentasPorFecha">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="DB_PROD_VENTASModel.GetVentasPorFecha_Result">
+                <ScalarProperty Name="rut" ColumnName="rut" />
+                <ScalarProperty Name="nombre" ColumnName="nombre" />
+                <ScalarProperty Name="total" ColumnName="total" />
+                <ScalarProperty Name="total_comision" ColumnName="total_comision" />
+                <ScalarProperty Name="fecha_venta" ColumnName="fecha_venta" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="Ninguno" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

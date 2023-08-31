@@ -1,0 +1,60 @@
+﻿@model CRUDVentas.Models.Tbl_Ventas
+
+@{
+    ViewBag.Title = "Eliminar venta";
+}
+
+<h2>Eliminar venta</h2>
+
+<h3>¿Está seguro que desea eliminar?</h3>
+<div>
+    <h4>Información</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.id_venta)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.id_venta)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.rut_vendedor)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.rut_vendedor)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.monto)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.monto)
+        </dd>
+
+       
+
+        <dt>
+            @Html.DisplayNameFor(model => model.fecha_venta)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.fecha_venta)
+        </dd>
+
+       
+
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Eliminar" class="btn btn-danger" /> |
+            @Html.ActionLink("Volver", "Index")
+        </div>
+    }
+</div>

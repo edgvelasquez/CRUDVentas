@@ -1,0 +1,47 @@
+﻿@model IEnumerable<CRUDVentas.Models.Tbl_Comision>
+
+@{
+    ViewBag.Title = "Comisión";
+}
+
+<h2>Comisión</h2>
+
+<p>
+    @Html.ActionLink("Agregar nuevo", "Create",new {@class="btn btn-success"})
+</p>
+<p>
+    @Html.ActionLink("Exportar excel", "Export", new { @class = "btn btn-success" })
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.id_comision)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.margen)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.tipo_ventas)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.id_comision)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.margen)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.tipo_ventas)
+        </td>
+        <td>
+            @Html.ActionLink("Editar", "Edit", new { id=item.id_comision }, new { @class = "btn btn-primary" }) |
+            @Html.ActionLink("Eliminar", "Delete", new { id=item.id_comision }, new { @class = "btn btn-danger" })
+        </td>
+    </tr>
+}
+
+</table>

@@ -1,0 +1,40 @@
+﻿@model CRUDVentas.Models.Tbl_Region
+
+@{
+    ViewBag.Title = "Eliminar región";
+}
+
+<h2>Eliminar región</h2>
+
+<h3>¿Está seguro que desea eliminar?</h3>
+<div>
+    <h4>Información</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.cod_region)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.cod_region)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.descripcion)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.descripcion)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Eliminar" class="btn btn-danger" /> |
+            @Html.ActionLink("Volver", "Index")
+        </div>
+    }
+</div>

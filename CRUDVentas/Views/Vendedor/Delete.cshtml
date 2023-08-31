@@ -1,0 +1,104 @@
+﻿@model CRUDVentas.Models.Tbl_Vendedor
+
+@{
+    ViewBag.Title = "Eliminar vendedor";
+}
+
+<h2>Eliminar vendedor</h2>
+
+<h3>¿Está seguro que desea eliminar?</h3>
+<div>
+    <h4>Información vendedor</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.rut)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.rut)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.nombre)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.nombre)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.a_paterno)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.a_paterno)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.a_materno)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.a_materno)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.direccion)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.direccion)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.fono)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.fono)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.email)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.email)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.fecha_ingreso)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.fecha_ingreso)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.region)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.region)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.pais)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.pais)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Eliminar" class="btn btn-danger" /> |
+            @Html.ActionLink("Volver", "Index")
+        </div>
+    }
+</div>
